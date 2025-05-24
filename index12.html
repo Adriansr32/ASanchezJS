@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<style>
+    #llimona {
+        position: absolute;
+        top: 100px;
+        left: 100px;
+        width: 80px;
+    }
+</style>
+
+<body>
+    <img id="llimona" onclick="toca()"
+        src="https://www.publicdomainpictures.net/pictures/460000/velka/vintage-zitrone-obst-frucht.png" />
+
+
+    <script>
+        let t = 50;
+        let l = 300;
+        let punter = 0;
+        arrayLlimona = [
+            [150, 300],
+            [55, 200],
+            [160, 350],
+            [55, 400],
+            [100, 200]
+        ]
+        setInterval(myTimer, 1000);
+        function myTimer() {
+            punter = punter + 1;
+            if (punter > arrayLlimona.length) {
+                punter = 0;
+            }
+            var elem = document.getElementById("llimona");
+            elem.style.top = arrayLlimona[punter][0] + "px";
+            elem.style.left = arrayLlimona[punter][1] + "px";
+            elem.style.width = "80px";
+
+        }
+        function toca() {
+            var elem = document.getElementById("llimona");
+            elem.style.width = "20px";
+        }
+    </script>
+</body>
+
+</html>

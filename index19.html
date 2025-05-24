@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ca">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Fets sobre gats</title>
+  </head>
+  <body>
+    <h1>Fets sobre gats:</h1>
+    <p id="fet"></p>
+    <p id="lenght"></p>
+    <button onclick="femfetch()">Mostra un fet</button>
+    <button onclick="lenght()">Lenght</button>
+
+
+    <script>
+      function femfetch()
+        {
+       
+        fetch("https://catfact.ninja/fact")
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("fet").textContent = data.fact;
+            document.getElementById("lenght").textContent = data.length;
+          });
+        }
+
+        function lenght(){
+            fetch("https://catfact.ninja/fact")
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("lenght").textContent = data.length;
+          });
+        }
+    </script>
+  </body>
+</html>

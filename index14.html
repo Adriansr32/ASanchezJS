@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ml5.js Lleuger</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ml5@0.12.2/dist/ml5.min.js"></script>
+</head>
+<body>
+    <script>
+        let video;
+        let poseNet;
+        let personDetected = false;
+
+
+        function setup() {
+            createCanvas(320, 240);
+            video = createCapture(VIDEO);
+            video.size(320, 240);
+            video.hide();
+
+
+            // Esperar a que ml5 estigui disponible
+            if (typeof ml5 !== "undefined") {
+                poseNet = ml5.poseNet(video, () => console.log("PoseNet carregat!"));
+                poseNet.on('pose', gotPoses);
+            } else {
+                console.error("ml5 no està definit!");
+            }
+        }
+
+
+        function gotPoses(results) {
+            personDetected = results.length > 0;
+        }
+
+
+        function draw() {
+            image(video, 0, 0);
+            fill(255, 0, 0);
+            textSize(20);
+            textAlign(CENTER, CENTER);
+            text(personDetected ? "Persona detectada!" : "No hi ha ningú", width / 2, height - 20);
+        }
+    </script>
+</body>
+</html>

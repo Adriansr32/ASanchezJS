@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ca">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Fets sobre gats</title>
+  </head>
+  <body>
+    <h1>Fets sobre gats:</h1>
+    <p id="fet"></p>
+    <p id="lenght"></p>
+    <img id="imatge" src="">
+    <button onclick="femfetch()">Mostra una fact</button>
+    <button onclick="lenght()">Lenght</button>
+    <button onclick="imaga()">Mostra una imatge</button>
+
+
+    <script>
+      function femfetch()
+        {
+       
+        fetch("https://api.thecatapi.com/v1/images/search")
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("fet").textContent = data.fact;
+            document.getElementById("lenght").textContent = data.length;
+          });
+        }
+
+        function lenght(){
+            fetch("https://api.thecatapi.com/v1/images/search")
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("lenght").textContent = data.length;
+          });
+        }
+        function imaga(){
+            fetch("https://api.thecatapi.com/v1/images/search")
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("imatge").src = data[0].url;
+          });
+        }
+    </script>
+  </body>
+</html>

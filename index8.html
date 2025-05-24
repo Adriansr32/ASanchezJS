@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+ 
+<h2>JavaScript Countdown</h2>
+ 
+ 
+<p id="comptador">10</p>
+ 
+<button onclick="myFunction();">Try it</button>
+ 
+<script>
+temps=10;
+function myFunction() {
+ temps=temps-1;
+ document.getElementById("comptador").innerHTML=temps;
+ if (temps < 0) {
+        alert("Temps acabat!"); 
+        return; 
+    }
+ setTimeout(myFunction, 1000);
+ }
+</script>
+ 
+</body>
+</html>

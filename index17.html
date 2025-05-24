@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ml5.js - Dibuixar mans i comptador</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ml5@0.12.2/dist/ml5.min.js"></script>
+</head>
+<body>
+    <script>
+        let video;
+        let poseNet;
+        let poses = [];
+        let timer = 60; // Temps inicial del comptador
+        let timerRunning = false; // Per controlar si el comptador està en marxa
+        let handsInCircle = false; // Controla si les dues mans estan dins del cercle
+        let score = 0; // Puntuació del jugador
+        let fallingObjects = []; // Array per emmagatzemar els objectes que cauen
+       
+        // Posició i mida del cercle
+        const circleX = 640;
+        const circleY = 50;
+        const circleRadius = 200; // Cercle més gran
+
+
+        function setup() {
+            createCanvas(1280, 720); // Mida de la pantalla augmentada
+            video = createCapture(VIDEO);
+            video.size(1280, 720); // Mida del vídeo augmentada
+            video.hide();
+
+
+            poseNet = ml5.poseNet(video, () => console.log("PoseNet carregat!"));
+            poseNet.on('pose', gotPoses);
+        }
+
+
+        function gotPoses(results) {
+            poses = results;
+        }
+
+
+        function draw() {
+            image(video, 0, 0);
+
+            // Dibuixar la puntuació
+            fill(0);
+            textSize(32);
+            textAlign(LEFT, TOP);
+            text(`Puntuació: ${score}`, 10, 10);
+
+            // Si el comptador no està en marxa, dibuixar el cercle verd (botó d'inici)
+            if (!timerRunning) {
+                fill(0, 255, 0, 150); // Cercle verd semi-transparent
+                noStroke();
+                ellipse(circleX, circleY, circleRadius * 2);
+
+                // Comprovar si les dues mans estan dins del cercle
+                if (poses.length > 0) {
+                let pose = poses[0].pose;
+                let leftWrist = pose.keypoints.find(kp => kp.part === 'leftWrist');
+                let rightWrist = pose.keypoints.find(kp => kp.part === 'rightWrist');
+               
+                if (leftWrist && rightWrist) {
+                    let leftDist = dist(leftWrist.position.x, leftWrist.position.y, circleX, circleY);
+                    let rightDist = dist(rightWrist.position.x, rightWrist.position.y, circleX, circleY);
+
+
+                    // Comprovar si les dues mans estan dins del cercle
+                    if (leftDist < circleRadius && rightDist < circleRadius) {
+                        handsInCircle = true;
+                        startTimer(); // Comença el comptador
+                    }
+                }
+            }
+
+           // Actualitzar i dibuixar objectes que cauen
+            if (timerRunning) {
+                for (let i = fallingObjects.length - 1; i >= 0; i--) {
+                    fallingObjects[i].y += fallingObjects[i].speed; // Fer caure l'objecte
+                    fill(fallingObjects[i].color); // Color de l'objecte
+                    noStroke();
+                    ellipse(fallingObjects[i].x, fallingObjects[i].y, fallingObjects[i].size);
+
+                    // Eliminar objectes que surten de la pantalla
+                    if (fallingObjects[i].y > height + fallingObjects[i].size / 2) {
+                        fallingObjects.splice(i, 1);
+                    }
+                }
+
+                // Crear nous objectes periòdicament (ajustar la freqüència segons la dificultat)
+                if (frameCount % 30 === 0) { // Crear un objecte cada 30 frames (aprox 0.5 segons) 
+                    createFallingObject();
+                }
+            }
+
+
+            // Comprovar col·lisions amb mans i peus
+            if (poses.length > 0) {
+                let pose = poses[0].pose;
+                const detectionParts = ['leftWrist', 'rightWrist', 'leftAnkle', 'rightAnkle'];
+
+                for (let i = fallingObjects.length - 1; i >= 0; i--) {
+                    let object = fallingObjects[i];
+                    let hit = false;
+
+                    for (let j = 0; j < pose.keypoints.length; j++) {
+                        let keypoint = pose.keypoints[j];
+                        // Comprovar només els punts de les mans i els peus amb una confiança mínima
+                        if (keypoint.score > 0.2 && detectionParts.includes(keypoint.part)) {
+                            let d = dist(keypoint.position.x, keypoint.position.y, object.x, object.y);
+                            if (d < object.size / 2 + 12 / 2) { // 12 és la mida del punt dibuixat
+                                hit = true;
+                                break; // No cal comprovar amb altres punts per a aquest objecte
+                            }
+                        }
+                    }
+
+                    if (hit) {
+                        fallingObjects.splice(i, 1); // Eliminar l'objecte
+                        score++; // Incrementar la puntuació
+                    }
+                }
+            }
+
+            // Dibuixar punts vermells per a mans i peus
+            if (poses.length > 0) {
+                let pose = poses[0].pose;
+
+
+                for (let i = 0; i < pose.keypoints.length; i++) {
+                    let keypoint = pose.keypoints[i];
+                    // Mostrar només els punts de les mans i els peus
+                    if (keypoint.score > 0.2 && (keypoint.part.includes('Wrist') || keypoint.part.includes('Ankle'))) {
+                        fill(255, 0, 0); // Punt vermell
+                        noStroke();
+                        ellipse(keypoint.position.x, keypoint.position.y, 12, 12);
+                    }
+                }
+            }
+
+
+            // Mostrar el comptador si està en marxa
+            if (timerRunning) {
+                fill(255, 0, 0);
+                textSize(64);
+                textAlign(CENTER, CENTER);
+                text(timer, width / 2, height / 2);
+
+
+                // Comprovar si el comptador arriba a 0
+                if (timer > 0 && frameCount % 60 === 0) {
+                    timer--; // Disminuir el temps
+                }
+
+
+                if (timer === 0) {
+                    // Quan el comptador arriba a 0, torna a aparèixer el cercle
+                    resetGame();
+                }
+            }
+        }
+
+
+        // Funció per començar el comptador
+        function startTimer() {
+            if (!timerRunning) {
+                timerRunning = true;
+                handsInCircle = false; // Evitar que el cercle aparegui després de començar el comptador
+            }
+        }
+
+
+        // Funció per reiniciar el joc
+        function resetGame() {
+            timerRunning = false; // Atura el comptador
+            timer = 60; // Reinicia el comptador
+        }
+    </script>
+</body>
+</html>

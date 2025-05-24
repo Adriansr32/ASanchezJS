@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            min-height: 20vh;
+            margin: 0px;
+            padding: 10px;
+        }
+
+        #buttonP {
+            width: 40px;
+            height: 400px;
+            margin: 0 10px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <button id="buttonP" type="button" onclick="prevImage()">&lt</button>
+            <img id="mainImage" src="https://www.w3schools.com/css/img_mountains.jpg" alt="">
+            <button id="buttonP" type="button" onclick="nextImage()">&gt</button>
+
+
+            <script>
+                let currentIndex = 0;
+                const totalImages = 4;
+
+                function showImage(index) {
+                    const mainImage = document.getElementById('mainImage');
+                    switch (index) {
+                        case 0:
+                            mainImage.src = 'https://www.w3schools.com/css/img_5terre.jpg';
+                            break;
+                        case 1:
+                            mainImage.src = 'https://www.w3schools.com/css/img_forest.jpg';
+                            break;
+                        case 2:
+                            mainImage.src = 'https://www.w3schools.com/css/img_lights.jpg';
+                            break;
+                        case 3:
+                            mainImage.src = 'https://www.w3schools.com/css/img_mountains.jpg';
+                            break;
+                    }
+                }
+
+                function prevImage() {
+                    if (currentIndex <= 0) {
+                        currentIndex = totalImages - 1;
+                    } else {
+                        currentIndex = currentIndex - 1;
+                    }
+                    showImage(currentIndex);
+                }
+                setInterval(nextImage, 3000);
+
+                function nextImage() {
+                    if (currentIndex >= totalImages - 1) {
+                        currentIndex = 0;
+                    } else {
+                        currentIndex = currentIndex + 1;
+                    }
+                    showImage(currentIndex);
+                }
+
+                showImage(currentIndex);
+            </script>
+</body>
+
+</html>

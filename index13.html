@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Afegir Nou Usuari</h2>
+    <input type="text" id="nomUsuari" value="">
+    <input type="text" id="mailUsuari" value="">
+    <button type="button" onclick="afegirUsuari()">Afegir usuari</button>
+
+    <h2>Buscar Usuari</h2>
+    <input type="text" id="buscarUsuari" value="">
+    <button type="button" onclick="buscarUsuari()">Buscar usuari</button>
+    <script>
+        let usuaris = [];
+
+        function afegirUsuari(){
+            let nom = document.getElementById("nomUsuari").value;
+            let mail = document.getElementById("mailUsuari").value;
+
+            let usuari = {
+                nom: nom,
+                mail: mail
+            }
+
+            usuaris.push(usuari);
+        }
+        function buscarUsuari(){
+            let nom = document.getElementById("buscarUsuari").value;
+            
+            if (usuaris.length > 0) {
+                for (let i = 0; i < usuaris.length; i++) {
+                    if (usuaris[i].nom == nom) {
+                        alert("Usuari trobat: " + usuaris[i].mail);
+                    }
+                }
+            }
+
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <pre>
+        <p id="ovni"></p>
+    </pre>
+    
+    <!-- Botones para mover el OVNI -->
+    <button onclick="moveLeft()">Izquierda</button>
+    <button onclick="moveRight()">Derecha</button>
+
+    <script>
+        let ovni = "_=0=:";
+        let posicio = 20;
+
+        function updateOvniPosition() {
+            let espais = "";
+            for (let i = 0; i < posicio; i++) {
+                espais += " "; // Agregar un espacio por cada posición
+            }
+            document.getElementById("ovni").innerHTML = espais + ovni;
+        }
+
+        // Función para mover el OVNI a la izquierda
+        function moveLeft() {
+            posicio -= 1; // Mover a la izquierda
+            updateOvniPosition();
+        }
+
+        // Función para mover el OVNI a la derecha
+        function moveRight() {
+            posicio += 1; // Mover a la derecha
+            updateOvniPosition();
+        }
+
+        updateOvniPosition(); // Inicializar el OVNI en su posición
+    </script>
+</body>
+</html>

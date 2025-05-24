@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play the piano!</title>
+</head>
+<body>
+    <h1>Piano</h1>
+    <button type="button" onclick="sonar(this)">Do</button>
+    <button type="button" onclick="sonar(this)">Fa</button>
+    <button type="button" onclick="sonar(this)">La</button>
+    <button type="button" onclick="sonar(this)">Mi</button>
+    <button type="button" onclick="sonar(this)">Re</button>
+    <button type="button" onclick="sonar(this)">Sol</button>
+    <button type="button" onclick="sonar(this)">Si</button>
+    <br>
+    <p id="notesA"></p>
+    <button type="button" onclick="remove()">Esborra memòria</button>
+    <button type="button" onclick="playAll()">Play memòria</button>
+    <script>
+        let notes = [];
+        //var audio = new Audio('sounds/boing.mp3');
+        function sonar(element){
+            var a = "/sounds/" + element.innerHTML + ".mp3";
+            var audio = new Audio(a);
+            audio.play();
+            notes.push(element.innerHTML);
+            document.getElementById("notesA").innerHTML = notes;
+        }
+        function remove(){
+            notes = [];
+            document.getElementById("notesA").innerHTML = notes;
+        }
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+         async function playAll(){
+            if(notes.length == 0) {
+                alert("No hi ha notes a reproduir");
+            } else {
+                for (let i = 0; i < notes.length; i++) {
+                    var a = "/sounds/" + notes[i] + ".mp3";
+                    var audio = new Audio(a);
+                    audio.play();
+                    await sleep(1000);
+                }
+            }   
+          }
+    </script>
+</body>
+</html>

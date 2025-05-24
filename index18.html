@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>JavaScript Objectes</h2>
+<p id="demo1"></p>
+ 
+<script>
+let llibre = {
+        titol:"Quijote",
+        autor:"Cervantes",
+        segle:"XV",
+        };
+        	 
+alert (llibre.segle);
+alert (llibre.autor);
+ 
+//llistem totes les keys i els continguts amb un for
+let retornaString="";
+for (let k in llibre){
+        	retornaString=retornaString + "  key: "+ k + " --> "+ llibre[k] +" <br>";
+}
+document.getElementById("demo1").innerHTML = retornaString;
+</script>
+ 
+</body>
+</html>
+ 

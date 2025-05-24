@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ml5.js - Dibuixar mans i peus</title>
+    <!--p5.js és una llibreria de JavaScript que fa molt fàcil dibuixar a la pantalla: imatges, formes, textos...-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <!--Carregar el model PoseNet, que detecta automàticament la posició de les parts del cos (cap, braços, mans, peus...) en el vídeo de la teva càmera.-->
+    <script src="https://cdn.jsdelivr.net/npm/ml5@0.12.2/dist/ml5.min.js"></script>
+</head>
+
+<body>
+    <script>
+        let video;
+        let poseNet;
+        let poses = [];
+
+        function setup() {
+            createCanvas(320, 240);
+            video = createCapture(VIDEO);
+            video.size(320, 240);
+            video.hide();
+
+
+            poseNet = ml5.poseNet(video, () => console.log("PoseNet carregat!"));
+            poseNet.on('pose', gotPoses);
+        }
+
+
+        function gotPoses(results) {
+            poses = results;
+
+        }
+
+
+        function draw() {
+            image(video, 0, 0);
+
+
+            for (let i = 0; i < poses.length; i++) {
+                let pose = poses[i].pose;
+
+
+                // Llista dels punts que volem dibuixar
+                const puntsDesitjats = ['leftWrist', 'rightWrist', 'leftAnkle', 'rightAnkle'];
+
+
+                for (let j = 0; j < pose.keypoints.length; j++) {
+                    let keypoint = pose.keypoints[j];
+                    //includes retorna true si el punt es troba a la llista
+                    if (keypoint.score > 0.2 && puntsDesitjats.includes(keypoint.part)) {
+                        fill(255, 0, 0);
+                        noStroke();
+                        ellipse(keypoint.position.x, keypoint.position.y, 12, 12);
+                    }
+                }
+            }
+
+
+            fill(255, 0, 0);
+
+        }
+    </script>
+</body>
+
+</html>
